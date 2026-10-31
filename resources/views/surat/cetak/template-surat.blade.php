@@ -1,212 +1,332 @@
+@php
+    $profil = $profil ?? once(fn () => \App\Models\ProfilDesa::first());
+    $pejabat = $penandatangan
+        ?? $surat->aparatur
+        ?? $surat->ttdAparatur
+        ?? \App\Models\Aparatur::where('status_aktif', true)->orderBy('urutan')->first();
+
+    $namaDesa = $profil->nama_desa ?? 'Pabelan';
+    $kecamatan = $profil->kecamatan ?? 'Kartasura';
+    $kabupaten = $profil->kabupaten ?? 'Sukoharjo';
+    $jabatanPejabat = $pejabat->jabatan ?? 'Kepala Desa';
+    $namaPejabat = $pejabat->nama ?? ($profil->nama_kepala_desa ?? 'Sujatno, S.Sos.');
+    $nipPejabat = $pejabat->nip_niap ?? ($profil->nip_kepala_desa ?? null);
+
+    $dataTambahan = $surat->data_tambahan ?? $surat->data_isian ?? [];
+    $tanggalTerbit = ($surat->tanggal_disetujui ?? $surat->tanggal_selesai ?? now())->translatedFormat('d F Y');
+    $urlVerifikasi = $surat->qr_token ? route('surat.verifikasi', $surat->qr_token) : route('home');
+    $hashHex = md5($urlVerifikasi);
+@endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cetak Surat - {{ $surat->nomor_surat ?? 'Surat Keterangan' }}</title>
+    <title>Cetak {{ $surat->jenisSurat->nama_surat ?? 'Surat Keterangan' }} - {{ $surat->nomor_surat ?? 'Draft' }}</title>
     <style>
         @page {
             size: A4 portrait;
-            margin: 20mm 25mm 20mm 25mm;
+            margin: 15mm 20mm 15mm 20mm;
+        }
+        * {
+            box-sizing: border-box;
         }
         body {
             font-family: 'Times New Roman', Times, serif;
             font-size: 12pt;
-            line-height: 1.5;
+            line-height: 1.45;
             color: #000;
-            background: #fff;
+            background: #e2e8f0;
             margin: 0;
-            padding: 0;
+            padding: 24px 12px;
         }
-        .text-center { text-align: center; }
-        .text-justify { text-align: justify; }
-        .text-right { text-align: right; }
-        .fw-bold { font-weight: bold; }
+        .a4-sheet {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            background: #fff;
+            padding: 18mm 22mm;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15);
+        }
+        .toolbar-no-print {
+            max-width: 210mm;
+            margin: 0 auto 16px auto;
+            background: #172554;
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 13px;
+        }
+        .toolbar-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 7px;
+            font-weight: 700;
+            font-size: 12px;
+            text-decoration: none;
+            cursor: pointer;
+            border: 1px solid #93C5FD;
+        }
+        .btn-print {
+            background: #1D4ED8;
+            color: #fff;
+        }
+        .btn-verify {
+            background: #DBEAFE;
+            color: #172554;
+        }
         .judul-surat {
-            margin-top: 10px;
-            margin-bottom: 25px;
+            text-align: center;
+            margin: 14px 0 18px 0;
         }
-        .judul-surat h3 {
+        .judul-surat h1 {
             margin: 0;
             font-size: 14pt;
+            font-weight: bold;
             text-decoration: underline;
             text-transform: uppercase;
         }
         .judul-surat p {
-            margin: 3px 0 0 0;
-            font-size: 11pt;
+            margin: 4px 0 0 0;
+            font-size: 11.5pt;
+            font-weight: bold;
         }
-        .table-data {
+        .paragraf {
+            text-align: justify;
+            margin: 0 0 10px 0;
+            text-indent: 32px;
+        }
+        .tabel-biodata {
             width: 100%;
-            margin: 12px 0 16px 20px;
             border-collapse: collapse;
+            margin: 8px 0 12px 16px;
         }
-        .table-data td {
-            padding: 3px 6px;
+        .tabel-biodata td {
+            padding: 2.5px 6px;
             vertical-align: top;
             font-size: 11.5pt;
         }
-        .ttd-box {
-            margin-top: 35px;
+        .tabel-ttd {
             width: 100%;
+            margin-top: 24px;
+            border-collapse: collapse;
         }
-        .ttd-box td {
+        .tabel-ttd td {
             vertical-align: top;
         }
-        .qr-placeholder {
-            width: 75px;
-            height: 75px;
-            border: 1px solid #333;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 8pt;
-            text-align: center;
-            margin-bottom: 5px;
+        .qr-box {
+            display: inline-block;
+            padding: 6px;
+            border: 1px solid #172554;
+            background: #fff;
+            margin: 6px 0;
         }
         @media print {
-            .no-print { display: none !important; }
+            body {
+                background: #fff;
+                padding: 0;
+            }
+            .a4-sheet {
+                width: 100%;
+                min-height: auto;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+            .toolbar-no-print {
+                display: none !important;
+            }
         }
     </style>
 </head>
 <body>
-
-    <!-- Tombol Cetak Browser -->
-    <div class="no-print" style="background: #f1f5f9; padding: 12px; text-align: right; margin-bottom: 20px; border-bottom: 1px solid #cbd5e1;">
-        <button onclick="window.print()" style="background: #0284c7; color: white; padding: 8px 18px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
-            🖨️ Cetak / Simpan PDF
-        </button>
+    <!-- Bilah Alat Cetak (Tidak ikut tercetak di kertas A4) -->
+    <div class="toolbar-no-print">
+        <div>
+            <strong>Dokumen Resmi A4 &bull; Desa {{ $namaDesa }}</strong>
+            <span style="display: block; font-size: 11px; color: #DBEAFE;">
+                Nomor: {{ $surat->nomor_surat ?? 'Draft Belum Disetujui' }} &bull; Metode TTD: {{ strtoupper($surat->tipe_ttd ?? 'qrcode') }}
+            </span>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            @if ($surat->qr_token)
+                <a href="{{ $urlVerifikasi }}" target="_blank" class="toolbar-btn btn-verify">
+                    Uji Halaman Scan QR Publik
+                </a>
+            @endif
+            <button type="button" onclick="window.print()" class="toolbar-btn btn-print">
+                Cetak / Simpan PDF (A4)
+            </button>
+        </div>
     </div>
 
-    <!-- Kop Surat Otomatis -->
-    <x-kop-surat :profil="$profil" />
+    <div class="a4-sheet">
+        <!-- 1. Kop Surat Resmi Dinamis Desa Pabelan -->
+        <x-kop-surat :profil="$profil" />
 
-    <!-- Judul & Nomor Surat -->
-    <div class="judul-surat text-center">
-        <h3>{{ $surat->jenisSurat->nama_surat ?? 'SURAT KETERANGAN' }}</h3>
-        <p>Nomor: {{ $surat->nomor_surat ?? '470 / ...... / KJW / 2026' }}</p>
-    </div>
+        <!-- 2. Judul & Nomor Surat Resmi -->
+        <div class="judul-surat">
+            <h1>{{ strtoupper($surat->jenisSurat->nama_surat ?? 'SURAT KETERANGAN DESA') }}</h1>
+            <p>Nomor: {{ $surat->nomor_surat ?? ($surat->jenisSurat->kode_surat ?? '470') . ' / ...... / DS-PBL / ' . now()->year }}</p>
+        </div>
 
-    <!-- Paragraf Pembuka -->
-    <div class="text-justify">
-        <p>
-            Yang bertanda tangan di bawah ini Kepala Desa {{ $profil->nama_desa ?? 'Kejawar' }}, 
-            Kecamatan {{ $profil->kecamatan ?? 'Banyumas' }}, Kabupaten {{ $profil->kabupaten ?? 'Banyumas' }}, 
-            menerangkan dengan sebenarnya bahwa:
-        </p>
-    </div>
-
-    <!-- Data Biodata Penduduk (Otomatis dari Database) -->
-    <table class="table-data">
-        <tr>
-            <td style="width: 25%;">Nama Lengkap</td>
-            <td style="width: 3%;">:</td>
-            <td style="width: 72%;" class="fw-bold">{{ strtoupper($surat->warga->nama_lengkap ?? '-') }}</td>
-        </tr>
-        <tr>
-            <td>NIK</td>
-            <td>:</td>
-            <td>{{ $surat->warga->nik ?? '-' }}</td>
-        </tr>
-        <tr>
-            <td>No. Kartu Keluarga</td>
-            <td>:</td>
-            <td>{{ $surat->warga->kartuKeluarga->no_kk ?? '-' }}</td>
-        </tr>
-        <tr>
-            <td>Tempat, Tgl. Lahir</td>
-            <td>:</td>
-            <td>{{ $surat->warga->tempat_lahir ?? '-' }}, {{ $surat->warga->tanggal_lahir ? $surat->warga->tanggal_lahir->translatedFormat('d F Y') : '-' }}</td>
-        </tr>
-        <tr>
-            <td>Jenis Kelamin</td>
-            <td>:</td>
-            <td>{{ $surat->warga->jenis_kelamin ?? '-' }}</td>
-        </tr>
-        <tr>
-            <td>Agama</td>
-            <td>:</td>
-            <td>{{ $surat->warga->agama ?? '-' }}</td>
-        </tr>
-        <tr>
-            <td>Pekerjaan</td>
-            <td>:</td>
-            <td>{{ $surat->warga->pekerjaan ?? '-' }}</td>
-        </tr>
-        <tr>
-            <td>Alamat Tinggal</td>
-            <td>:</td>
-            <td>
-                {{ $surat->warga->kartuKeluarga->alamat ?? '-' }}, 
-                RT {{ $surat->warga->kartuKeluarga->rt ?? '0' }} / RW {{ $surat->warga->kartuKeluarga->rw ?? '0' }}, 
-                Dusun {{ $surat->warga->kartuKeluarga->dusun ?? '-' }}, 
-                Desa {{ $profil->nama_desa ?? 'Kejawar' }}
-            </td>
-        </tr>
-    </table>
-
-    <!-- Paragraf Maksud & Keterangan Tambahan -->
-    <div class="text-justify">
-        <p>
-            Bahwa nama tersebut di atas adalah benar-benar warga penduduk Desa {{ $profil->nama_desa ?? 'Kejawar' }}, 
-            dan surat pengantar/keterangan ini diberikan untuk keperluan:
-        </p>
-        <p style="margin-left: 20px; font-weight: bold; font-style: italic;">
-            "{{ $surat->keperluan ?? '-' }}"
+        <!-- 3. Paragraf Pembuka -->
+        <p class="paragraf">
+            Yang bertanda tangan di bawah ini {{ $jabatanPejabat }} {{ $namaDesa }}, Kecamatan {{ $kecamatan }}, Kabupaten {{ $kabupaten }}, Provinsi {{ $profil->provinsi ?? 'Jawa Tengah' }}, menerangkan dengan sebenarnya bahwa:
         </p>
 
-        @if(!empty($surat->data_isian))
-            <p>Keterangan Tambahan:</p>
-            <table class="table-data" style="margin-top: 5px;">
-                @foreach($surat->data_isian as $key => $val)
+        <!-- 4. Tabel Biodata Dasar Pemohon -->
+        <table class="tabel-biodata">
+            <tr>
+                <td style="width: 30%;">Nama Lengkap</td>
+                <td style="width: 3%;">:</td>
+                <td style="width: 67%; font-weight: bold;">{{ strtoupper($surat->warga->nama_lengkap ?? '-') }}</td>
+            </tr>
+            <tr>
+                <td>NIK / No. KK</td>
+                <td>:</td>
+                <td>{{ $surat->warga->nik ?? '-' }} / {{ $surat->warga->kartuKeluarga->no_kk ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td>Tempat, Tanggal Lahir</td>
+                <td>:</td>
+                <td>
+                    {{ $surat->warga->tempat_lahir ?? '-' }},
+                    {{ $surat->warga && $surat->warga->tanggal_lahir ? $surat->warga->tanggal_lahir->translatedFormat('d F Y') : '-' }}
+                </td>
+            </tr>
+            <tr>
+                <td>Jenis Kelamin / Agama</td>
+                <td>:</td>
+                <td>{{ $surat->warga->jenis_kelamin ?? '-' }} / {{ $surat->warga->agama ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td>Status Perkawinan</td>
+                <td>:</td>
+                <td>{{ $surat->warga->status_perkawinan ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td>Pekerjaan</td>
+                <td>:</td>
+                <td>{{ $surat->warga->pekerjaan ?? '-' }}</td>
+            </tr>
+            <tr>
+                <td>Alamat Tempat Tinggal</td>
+                <td>:</td>
+                <td>
+                    {{ $surat->warga->kartuKeluarga->alamat ?? '-' }},
+                    RT {{ $surat->warga->kartuKeluarga->rt ?? '00' }} / RW {{ $surat->warga->kartuKeluarga->rw ?? '00' }},
+                    {{ $surat->warga->kartuKeluarga->dusun ?? 'Dusun Pabelan' }},
+                    Desa {{ $namaDesa }}, Kec. {{ $kecamatan }}, Kab. {{ $kabupaten }}
+                </td>
+            </tr>
+        </table>
+
+        <!-- 5. Narasi Surat & Rincian Data Tambahan Khusus -->
+        <p class="paragraf">
+            {{ $surat->jenisSurat->template_narasi ?? 'Bahwa nama yang tercantum di atas adalah benar-benar warga penduduk Desa ' . $namaDesa . ', Kecamatan ' . $kecamatan . ', Kabupaten ' . $kabupaten . ' yang berkelakuan baik dan tercatat dalam administrasi kependudukan desa.' }}
+        </p>
+
+        @if (!empty($dataTambahan))
+            <table class="tabel-biodata" style="margin-top: 4px; margin-bottom: 10px;">
+                @foreach ($dataTambahan as $key => $val)
                     <tr>
-                        <td style="width: 25%; text-transform: capitalize;">{{ str_replace('_', ' ', $key) }}</td>
+                        <td style="width: 30%;">{{ ucwords(str_replace('_', ' ', $key)) }}</td>
                         <td style="width: 3%;">:</td>
-                        <td style="width: 72%;">{{ $val }}</td>
+                        <td style="width: 67%; font-weight: bold;">{{ is_array($val) ? implode(', ', $val) : $val }}</td>
                     </tr>
                 @endforeach
             </table>
         @endif
 
-        <p>
-            Demikian surat keterangan ini dibuat dengan sebenarnya agar dapat dipergunakan sebagaimana mestinya.
+        <p class="paragraf">
+            Surat keterangan ini diterbitkan dan diberikan kepada yang bersangkutan untuk keperluan: <strong>"{{ $surat->keperluan }}"</strong>.
         </p>
-    </div>
 
-    <!-- Tanda Tangan & QR Code Verifikasi Keabsahan -->
-    <table class="ttd-box">
-        <tr>
-            <td style="width: 50%; text-align: center;">
-                @if($surat->qr_token)
-                    <div style="margin-top: 25px;">
-                        <div class="qr-placeholder">
-                            QR CODE<br>VERIFIKASI
+        <p class="paragraf">
+            Demikian surat keterangan ini dibuat dengan sebenarnya untuk dapat dipergunakan sebagaimana mestinya.
+        </p>
+
+        <!-- 6. Blok Pengesahan & QR Code Tanda Tangan Elektronik di Kanan Bawah -->
+        <table class="tabel-ttd">
+            <tr>
+                <td style="width: 48%; padding-top: 24px;">
+                    @if ($surat->qr_token)
+                        <div style="font-size: 8.5pt; color: #333; border: 1px solid #cbd5e1; padding: 8px 10px; border-radius: 6px; max-width: 240px;">
+                            <strong style="display: block; color: #000;"> Informasi Keabsahan Dokumen:</strong>
+                            Dokumen ini terdaftar resmi di Sistem SADESA Desa {{ $namaDesa }}. Pindai QR Code pada bagian tanda tangan atau kunjungi:<br>
+                            <span style="font-family: monospace; font-size: 8pt; word-break: break-all;">{{ $urlVerifikasi }}</span>
                         </div>
-                        <p style="margin: 0; font-size: 8.5pt; color: #555;">
-                            Pindai untuk validasi keaslian surat<br>
-                            Token: {{ substr($surat->qr_token, 0, 10) }}...
-                        </p>
-                    </div>
-                @endif
-            </td>
-            <td style="width: 50%; text-align: center;">
-                <p style="margin: 0 0 5px 0;">
-                    {{ $profil->nama_desa ?? 'Kejawar' }}, {{ now()->translatedFormat('d F Y') }}
-                </p>
-                <p style="margin: 0 0 55px 0; font-weight: bold;">
-                    Kepala Desa {{ $profil->nama_desa ?? 'Kejawar' }}
-                </p>
-                <p style="margin: 0; font-weight: bold; text-decoration: underline;">
-                    {{ $profil->nama_kepala_desa ?? 'SUJATNO, S.Sos.' }}
-                </p>
-                @if($profil->nip_kepala_desa)
-                    <p style="margin: 2px 0 0 0; font-size: 10pt;">
-                        NIP. {{ $profil->nip_kepala_desa }}
-                    </p>
-                @endif
-            </td>
-        </tr>
-    </table>
+                    @endif
+                </td>
 
+                <td style="width: 52%; text-align: center;">
+                    <div style="margin-bottom: 4px;">
+                        {{ $namaDesa }}, {{ $tanggalTerbit }}
+                    </div>
+                    <div style="font-weight: bold; margin-bottom: 6px;">
+                        @if (stripos($jabatanPejabat, 'Kepala Desa') !== false)
+                            Kepala Desa {{ $namaDesa }}
+                        @else
+                            a.n. Kepala Desa {{ $namaDesa }}<br>{{ $jabatanPejabat }}
+                        @endif
+                    </div>
+
+                    @if (($surat->tipe_ttd ?? 'qrcode') === 'qrcode' && $surat->qr_token)
+                        <div class="qr-box">
+                            @if (class_exists(\SimpleSoftwareIO\QrCode\Facades\QrCode::class))
+                                {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(88)->margin(1)->generate($urlVerifikasi) !!}
+                            @else
+                                <!-- Matriks SVG QR Code Deterministik yang Mengarah ke URL Verifikasi Publik -->
+                                <a href="{{ $urlVerifikasi }}" target="_blank" title="Verifikasi Keaslian Dokumen">
+                                    <svg width="88" height="88" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+                                        <rect width="21" height="21" fill="#ffffff"/>
+                                        <!-- Finder Patterns -->
+                                        <path d="M0,0 h7 v7 h-7 z M1,1 v5 h5 v-5 z M2,2 h3 v3 h-3 z" fill="#000000"/>
+                                        <path d="M14,0 h7 v7 h-7 z M15,1 v5 h5 v-5 z M16,2 h3 v3 h-3 z" fill="#000000"/>
+                                        <path d="M0,14 h7 v7 h-7 z M1,15 v5 h5 v-5 z M2,16 h3 v3 h-3 z" fill="#000000"/>
+                                        @for ($r = 0; $r < 21; $r++)
+                                            @for ($c = 0; $c < 21; $c++)
+                                                @php
+                                                    $inFinder = ($r < 8 && $c < 8) || ($r < 8 && $c > 12) || ($r > 12 && $c < 8);
+                                                    $bitIndex = ($r * 21 + $c) % 32;
+                                                    $bitOn = (hexdec($hashHex[$bitIndex]) + $r + $c) % 2 === 0;
+                                                @endphp
+                                                @if (!$inFinder && $bitOn)
+                                                    <rect x="{{ $c }}" y="{{ $r }}" width="1" height="1" fill="#000000"/>
+                                                @endif
+                                            @endfor
+                                        @endfor
+                                    </svg>
+                                </a>
+                            @endif
+                        </div>
+                        <div style="font-size: 8pt; color: #333; margin-bottom: 4px;">
+                            Ditandatangani Secara Elektronik &bull; Token: {{ substr($surat->qr_token, 0, 10) }}
+                        </div>
+                    @else
+                        <div style="height: 76px;"></div>
+                    @endif
+
+                    <div style="font-weight: bold; text-decoration: underline;">
+                        {{ strtoupper($namaPejabat) }}
+                    </div>
+                    @if ($nipPejabat)
+                        <div style="font-size: 10pt;">
+                            NIP/NIAP. {{ $nipPejabat }}
+                        </div>
+                    @endif
+                </td>
+            </tr>
+        </table>
+    </div>
 </body>
 </html>

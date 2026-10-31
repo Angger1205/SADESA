@@ -18,31 +18,33 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // 1. Profil Desa (Sumber data Kop Surat & Halaman About)
-        ProfilDesa::firstOrCreate(['nama_desa' => 'Kejawar'], [
-            'kode_desa' => '33.02.14.2001',
-            'kecamatan' => 'Banyumas',
-            'kabupaten' => 'Banyumas',
+        ProfilDesa::query()->delete();
+        ProfilDesa::create([
+            'nama_desa' => 'Pabelan',
+            'kode_desa' => '33.11.12.2005',
+            'kecamatan' => 'Kartasura',
+            'kabupaten' => 'Sukoharjo',
             'provinsi' => 'Jawa Tengah',
-            'kode_pos' => '53192',
-            'alamat_kantor' => 'Jl. Kejawar No. 01, Desa Kejawar, Kec. Banyumas',
-            'email_desa' => 'pemdes@kejawar.desa.id',
-            'telepon_desa' => '0281-796123',
-            'website_url' => 'https://kejawar.desa.id',
-            'logo_desa' => 'images/logo-desa.png',
-            'lambang_daerah' => 'images/lambang-kab-banyumas.png',
+            'kode_pos' => '57169',
+            'alamat_kantor' => 'Jl. Ahmad Yani No. 12, Desa Pabelan, Kec. Kartasura',
+            'email_desa' => 'pemdes@pabelan.desa.id',
+            'telepon_desa' => '0271-780123',
+            'website_url' => 'https://pabelan.desa.id',
+            'logo_desa' => 'images/logo-desa-pabelan.png',
+            'lambang_daerah' => 'images/lambang-kab-sukoharjo.png',
             'nama_kepala_desa' => 'Sujatno, S.Sos.',
             'nip_kepala_desa' => '19750512 200212 1 003',
-            'sambutan_kades' => 'Selamat datang di Sistem Administrasi dan Informasi Desa (SADESA). Layanan ini hadir untuk memberikan kemudahan pelayanan persuratan dan keterbukaan informasi bagi seluruh warga desa.',
-            'sejarah' => 'Desa Kejawar memiliki sejarah panjang yang berakar dari masa Kadipaten Banyumas. Nama Kejawar konon berasal dari pohon Jawaru yang banyak tumbuh di tepian sungai Serayu...',
-            'visi' => 'Terwujudnya tata kelola pemerintahan desa yang transparan, akuntabel, dan pelayanan masyarakat berbasis digital menuju desa yang mandiri dan sejahtera.',
+            'sambutan_kades' => 'Selamat datang di Sistem Administrasi dan Informasi Desa (SADESA) Pemerintah Desa Pabelan. Layanan ini hadir untuk memberikan kemudahan pelayanan persuratan dan keterbukaan informasi bagi seluruh warga desa.',
+            'sejarah' => 'Desa Pabelan terletak di Kecamatan Kartasura, Kabupaten Sukoharjo dan berkembang sebagai pusat pendidikan, perdagangan, serta pemukiman masyarakat yang dinamis.',
+            'visi' => 'Terwujudnya tata kelola pemerintahan Desa Pabelan yang transparan, akuntabel, dan pelayanan masyarakat berbasis digital menuju desa yang mandiri dan sejahtera.',
             'misi' => "1. Meningkatkan pelayanan publik yang cepat, mudah, dan transparan.\n2. Mengembangkan sarana prasarana desa berbasis kebutuhan masyarakat.\n3. Memberdayakan ekonomi warga dan UMKM desa.",
-            'gambaran_wilayah' => 'Desa Kejawar terletak di Kecamatan Banyumas dengan topografi dataran rendah dan perbukitan agraris, dilewati oleh aliran Sungai Serayu.',
-            'batas_utara' => 'Desa Danaraja',
-            'batas_selatan' => 'Kecamatan Somagede',
-            'batas_timur' => 'Desa Sudagaran',
-            'batas_barat' => 'Sungai Serayu',
-            'luas_wilayah' => '342,5 Hektar',
-            'peta_embed' => '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15822.868779836928!2d109.28!3d-7.52!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6544a0e3!2sKejawar!5e0!3m2!1sid!2sid!4v1700000000000" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>',
+            'gambaran_wilayah' => 'Desa Pabelan terletak di jalur strategis Kecamatan Kartasura, Kabupaten Sukoharjo.',
+            'batas_utara' => 'Desa Gonilan',
+            'batas_selatan' => 'Desa Makamhaji',
+            'batas_timur' => 'Kota Surakarta',
+            'batas_barat' => 'Desa Gumpang',
+            'luas_wilayah' => '218,4 Hektar',
+            'peta_embed' => '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15820.4!2d110.76!3d-7.55!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a145!2sPabelan!5e0!3m2!1sid!2sid!4v1700000000000" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>',
         ]);
 
         // 2. Aparatur Pemerintahan Desa
@@ -67,20 +69,20 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 3. Master Kartu Keluarga & Warga
-        $kk = KartuKeluarga::firstOrCreate(['no_kk' => '3302141505080001'], [
+        $kk = KartuKeluarga::firstOrCreate(['no_kk' => '3311121505080001'], [
             'kepala_keluarga' => 'Budi Santoso',
-            'alamat' => 'Jl. Mawar RT 02 RW 01 Dusun Krajan',
-            'dusun' => 'Dusun Krajan',
+            'alamat' => 'Jl. Ahmad Yani RT 02 RW 01 Dusun Pabelan',
+            'dusun' => 'Dusun Pabelan',
             'rt' => '02',
             'rw' => '01',
-            'kode_pos' => '53192',
+            'kode_pos' => '57169',
         ]);
 
-        $wargaBudi = Warga::firstOrCreate(['nik' => '3302141505850001'], [
+        $wargaBudi = Warga::firstOrCreate(['nik' => '3311121505850001'], [
             'kartu_keluarga_id' => $kk->id,
             'nama_lengkap' => 'Budi Santoso',
             'jenis_kelamin' => 'Laki-laki',
-            'tempat_lahir' => 'Banyumas',
+            'tempat_lahir' => 'Sukoharjo',
             'tanggal_lahir' => '1985-05-15',
             'agama' => 'Islam',
             'pendidikan_terakhir' => 'SMA/Sederajat',
@@ -111,42 +113,8 @@ class DatabaseSeeder extends Seeder
             'role' => 'warga',
         ]);
 
-        // 5. Master Jenis Surat Layanan Warga
-        JenisSurat::firstOrCreate(['kode_surat' => 'SKU'], [
-            'nama_surat' => 'Surat Keterangan Usaha (SKU)',
-            'format_nomor' => '510/{NOMOR}/DS-KJW/{BULAN}/{TAHUN}',
-            'deskripsi' => 'Surat keterangan resmi dari desa yang menerangkan bahwa warga memiliki dan menjalankan usaha tertentu.',
-            'syarat_dokumen' => "1. Foto KTP Pemohon\n2. Foto Kartu Keluarga\n3. Foto tempat usaha",
-            'template_surat' => 'surat.templates.sku',
-            'is_aktif' => true,
-        ]);
-
-        JenisSurat::firstOrCreate(['kode_surat' => 'SKTM'], [
-            'nama_surat' => 'Surat Keterangan Tidak Mampu (SKTM)',
-            'format_nomor' => '401/{NOMOR}/DS-KJW/{BULAN}/{TAHUN}',
-            'deskripsi' => 'Surat keterangan untuk keperluan bantuan sosial, beasiswa pendidikan, atau keringanan biaya kesehatan/RS.',
-            'syarat_dokumen' => "1. Foto KTP Pemohon\n2. Foto Kartu Keluarga\n3. Surat Pengantar RT/RW",
-            'template_surat' => 'surat.templates.sktm',
-            'is_aktif' => true,
-        ]);
-
-        JenisSurat::firstOrCreate(['kode_surat' => 'SK_DOMISILI'], [
-            'nama_surat' => 'Surat Keterangan Domisili',
-            'format_nomor' => '470/{NOMOR}/DS-KJW/{BULAN}/{TAHUN}',
-            'deskripsi' => 'Surat keterangan yang menerangkan bahwa pemohon bertempat tinggal di wilayah Desa Kejawar.',
-            'syarat_dokumen' => "1. Foto KTP Pemohon\n2. Foto Kartu Keluarga",
-            'template_surat' => 'surat.templates.domisili',
-            'is_aktif' => true,
-        ]);
-
-        JenisSurat::firstOrCreate(['kode_surat' => 'SK_PENGANTAR_SKCK'], [
-            'nama_surat' => 'Surat Pengantar SKCK',
-            'format_nomor' => '331/{NOMOR}/DS-KJW/{BULAN}/{TAHUN}',
-            'deskripsi' => 'Surat pengantar kelakuan baik dari desa untuk pembuatan Surat Keterangan Catatan Kepolisian di Polsek/Polres.',
-            'syarat_dokumen' => "1. Foto KTP Pemohon\n2. Foto Kartu Keluarga\n3. Pas foto 4x6 latar merah",
-            'template_surat' => 'surat.templates.pengantar-skck',
-            'is_aktif' => true,
-        ]);
+        // 5. Master Jenis Surat Layanan Warga (14 Jenis Surat - Anggota 2)
+        $this->call(JenisSuratSeeder::class);
 
         // 6. Master Kategori Informasi
         $katBerita = KategoriInformasi::firstOrCreate(['slug' => 'berita-desa'], ['nama_kategori' => 'Berita Desa']);

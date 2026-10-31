@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Warga\SuratController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,19 +15,13 @@ Route::prefix('warga')->name('warga.')->middleware(['auth'])->group(function () 
         return view('warga.dashboard');
     })->name('dashboard');
 
-    // Pengajuan Surat Mandiri
-    Route::prefix('surat')->name('surat.')->group(function () {
-        Route::get('/', function () {
-            return view('warga.surat.index');
-        })->name('index');
-        Route::get('/buat', function () {
-            return view('warga.surat.create');
-        })->name('create');
-        Route::post('/kirim', function () { /* Store surat */
-        })->name('store');
-        Route::get('/{id}/detail', function ($id) {
-            return view('warga.surat.show', compact('id'));
-        })->name('show');
+    // Pengajuan & Pemantauan Surat Mandiri (Anggota 2: Nadhif Athaasyam Nurdewana - K3524062)
+    Route::prefix('surat')->name('surat.')->middleware(['can:akses-surat-warga'])->group(function () {
+        Route::get('/', [SuratController::class, 'index'])->name('index');
+        Route::get('/buat', [SuratController::class, 'create'])->name('create');
+        Route::post('/kirim', [SuratController::class, 'store'])->name('store');
+        Route::get('/{id}/detail', [SuratController::class, 'show'])->name('show');
+        Route::get('/{id}/cetak', [SuratController::class, 'cetak'])->name('cetak');
     });
 
     // Riwayat Pengaduan Saya

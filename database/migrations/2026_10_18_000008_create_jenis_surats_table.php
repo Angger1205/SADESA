@@ -10,11 +10,16 @@ return new class extends Migration
     {
         Schema::create('jenis_surats', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_surat', 30)->unique(); // SKU, SKTM, SK_DOMISILI, SK_PENGANTAR_SKCK, dll.
-            $table->string('nama_surat', 100);
-            $table->string('format_nomor', 100)->nullable(); // 470/{NOMOR}/KJW/{BULAN}/{TAHUN}
+            $table->string('kategori', 100)->default('Kategori A: Kependudukan & Catatan Sipil');
+            $table->string('kode_surat', 30)->unique(); // 470, 472.11, 401, 503, 331, dll.
+            $table->string('nama_surat', 150);
+            $table->string('format_nomor', 100)->nullable(); // 470/{NOMOR}/DS-KJW/{BULAN}/{TAHUN}
+            $table->text('deskripsi_kegunaan')->nullable();
             $table->text('deskripsi')->nullable();
             $table->text('syarat_dokumen')->nullable();
+            $table->json('syarat_tambahan')->nullable(); // Konfigurasi JSON daftar upload syarat berkas khusus
+            $table->json('form_input_tambahan')->nullable(); // Konfigurasi JSON field input dinamis khusus
+            $table->text('template_narasi')->nullable(); // Narasi isi surat resmi
             $table->text('template_surat')->nullable();
             $table->boolean('is_aktif')->default(true);
             $table->timestamps();
