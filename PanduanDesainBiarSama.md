@@ -1,4 +1,4 @@
-# Panduan Desain SADESA (Sistem Administrasi dan Informasi Desa)
+# Panduan Desain SADESA (Sistem Administrasi dan Informasi Desa) (Masukin Ke AI ya kalo mo pake AI aku sih pake)
 
 Dokumen ini disusun sebagai pedoman desain antarmuka (UI/UX) bagi seluruh anggota tim pengembang SADESA (Anggota 1 sampai 6) agar seluruh modul yang dibuat memiliki tampilan yang seragam, rapi, profesional, dan nyaman digunakan oleh warga maupun perangkat desa.
 
