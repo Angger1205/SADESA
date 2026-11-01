@@ -1,8 +1,12 @@
 <?php
 
-use App\Models\ProfilDesa;
-use App\Models\SuratPengantar;
+use App\Http\Controllers\Admin\JenisSuratController;
+use App\Http\Controllers\Admin\SuratPengantarController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\KartuKeluargaController;
+use App\Http\Controllers\Admin\WargaController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Middleware\PeranDiizinkan;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,32 +21,43 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     })->name('dashboard');
 
     // 1. Modul Kependudukan (Anggota 1)
-    Route::prefix('kependudukan')->name('kependudukan.')->group(function () {
-        Route::get('/kartu-keluarga', function () {
-            return view('admin.kependudukan.kk-index');
-        })->name('kk.index');
-        Route::get('/warga', function () {
-            return view('admin.kependudukan.warga-index');
-        })->name('warga.index');
-    });
+        // 1. Modul Kependudukan (Anggota 1)
+        // 1. Modul Kependudukan (Anggota 1)
+    Route::prefix('kependudukan')
+        ->name('kependudukan.')
+        ->middleware(PeranDiizinkan::class.':admin,kades,sekdes,staf')
+        ->group(function () {
+            Route::resource('kartu-keluarga', KartuKeluargaController::class)
+                ->except(['show'])
+                ->names('kk');
 
-    // 2. Modul Pelayanan & Cetak Surat (Anggota 2)
-    Route::prefix('surat')->name('surat.')->group(function () {
-        Route::get('/', function () {
-            return view('admin.surat.index');
-        })->name('index');
-        Route::get('/master-jenis', function () {
-            return view('admin.surat.jenis');
-        })->name('jenis');
-        Route::get('/{id}/proses', function ($id) {
-            return view('admin.surat.proses', compact('id'));
-        })->name('proses');
-        Route::get('/{id}/cetak', function ($id) {
-            $surat = SuratPengantar::with(['warga.kartuKeluarga', 'jenisSurat'])->findOrFail($id);
-            $profil = ProfilDesa::first();
+            Route::resource('warga', WargaController::class)->except(['show']);
 
-            return view('surat.cetak.template-surat', compact('surat', 'profil'));
-        })->name('cetak');
+            // Akun pengguna: khusus Administrator
+            Route::middleware(PeranDiizinkan::class.':admin')->group(function () {
+                Route::resource('pengguna', UserController::class)
+                    ->parameters(['pengguna' => 'user'])
+                    ->except(['show'])
+                    ->names('user');
+            });
+        });
+
+    // 2. Modul Pelayanan & Cetak Surat (Anggota 2: Nadhif Athaasyam Nurdewana - K3524062)
+    Route::prefix('surat')->name('surat.')->middleware(['can:akses-surat-admin'])->group(function () {
+        Route::get('/', [SuratPengantarController::class, 'index'])->name('index');
+
+        // CRUD Master Jenis Surat
+        Route::get('/master-jenis', [JenisSuratController::class, 'index'])->name('jenis');
+        Route::post('/master-jenis', [JenisSuratController::class, 'store'])->name('jenis.store');
+        Route::put('/master-jenis/{id}', [JenisSuratController::class, 'update'])->name('jenis.update');
+        Route::delete('/master-jenis/{id}', [JenisSuratController::class, 'destroy'])->name('jenis.destroy');
+
+        // Verifikasi, Keputusan (ACC / Tolak), dan Cetak PDF A4
+        Route::get('/{id}/proses', [SuratPengantarController::class, 'proses'])->name('proses');
+        Route::post('/{id}/keputusan', [SuratPengantarController::class, 'keputusan'])->name('keputusan');
+        Route::post('/{id}/setujui', [SuratPengantarController::class, 'setujui'])->name('setujui');
+        Route::post('/{id}/tolak', [SuratPengantarController::class, 'tolak'])->name('tolak');
+        Route::get('/{id}/cetak', [SuratPengantarController::class, 'cetak'])->name('cetak');
     });
 
     // 3. Modul Tanggapan Pengaduan (Anggota 3)

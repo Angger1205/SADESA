@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\SuratPengantar;
+use App\Http\Controllers\Public\VerifikasiSuratController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
 | Public Routes (Halaman Pengunjung / Warga Tanpa Login)
 |--------------------------------------------------------------------------
-| Dikelola oleh: Anggota 4, 5, 6
+| Dikelola oleh: Anggota 4, 5, 6 (dan Verifikasi QR Surat oleh Anggota 2)
 */
 
 Route::get('/', function () {
@@ -68,9 +68,5 @@ Route::prefix('panduan')->name('panduan.')->group(function () {
     })->name('detail');
 });
 
-// Validasi Keabsahan Surat Digital via QR Code
-Route::get('/verifikasi-surat/{token}', function ($token) {
-    $surat = SuratPengantar::where('qr_token', $token)->firstOrFail();
-
-    return view('public.verifikasi-surat', compact('surat'));
-})->name('surat.verifikasi');
+// Validasi Keabsahan Surat Digital via QR Code (Anggota 2: Nadhif Athaasyam Nurdewana - K3524062)
+Route::get('/verifikasi-surat/{token}', [VerifikasiSuratController::class, 'show'])->name('surat.verifikasi');

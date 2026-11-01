@@ -19,3 +19,9 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# AI Agent & Antislop Configurations (Local Only)
+.agents/
+AGENTS.md
+DESIGN.md
+
