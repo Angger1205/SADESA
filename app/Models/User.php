@@ -14,6 +14,14 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    public const PERAN = [
+        'admin' => 'Administrator',
+        'kades' => 'Kepala Desa',
+        'sekdes' => 'Sekretaris Desa',
+        'staf' => 'Staf Pelayanan',
+        'warga' => 'Warga',
+    ];
+
     protected $fillable = [
         'warga_id',
         'name',

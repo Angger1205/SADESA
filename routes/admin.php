@@ -3,6 +3,10 @@
 use App\Http\Controllers\Admin\JenisSuratController;
 use App\Http\Controllers\Admin\SuratPengantarController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\KartuKeluargaController;
+use App\Http\Controllers\Admin\WargaController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Middleware\PeranDiizinkan;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,14 +21,26 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     })->name('dashboard');
 
     // 1. Modul Kependudukan (Anggota 1)
-    Route::prefix('kependudukan')->name('kependudukan.')->group(function () {
-        Route::get('/kartu-keluarga', function () {
-            return view('admin.kependudukan.kk-index');
-        })->name('kk.index');
-        Route::get('/warga', function () {
-            return view('admin.kependudukan.warga-index');
-        })->name('warga.index');
-    });
+        // 1. Modul Kependudukan (Anggota 1)
+        // 1. Modul Kependudukan (Anggota 1)
+    Route::prefix('kependudukan')
+        ->name('kependudukan.')
+        ->middleware(PeranDiizinkan::class.':admin,kades,sekdes,staf')
+        ->group(function () {
+            Route::resource('kartu-keluarga', KartuKeluargaController::class)
+                ->except(['show'])
+                ->names('kk');
+
+            Route::resource('warga', WargaController::class)->except(['show']);
+
+            // Akun pengguna: khusus Administrator
+            Route::middleware(PeranDiizinkan::class.':admin')->group(function () {
+                Route::resource('pengguna', UserController::class)
+                    ->parameters(['pengguna' => 'user'])
+                    ->except(['show'])
+                    ->names('user');
+            });
+        });
 
     // 2. Modul Pelayanan & Cetak Surat (Anggota 2: Nadhif Athaasyam Nurdewana - K3524062)
     Route::prefix('surat')->name('surat.')->middleware(['can:akses-surat-admin'])->group(function () {

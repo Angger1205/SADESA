@@ -14,6 +14,24 @@ class Warga extends Model
 
     protected $table = 'wargas';
 
+    public const JENIS_KELAMIN = ['Laki-laki', 'Perempuan'];
+
+    public const AGAMA = ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu'];
+
+    public const PENDIDIKAN = [
+        'Tidak/Belum Sekolah', 'SD/Sederajat', 'SMP/Sederajat', 'SMA/Sederajat',
+        'D1/D2/D3', 'S1', 'S2', 'S3',
+    ];
+
+    public const STATUS_PERKAWINAN = ['Belum Kawin', 'Kawin', 'Cerai Hidup', 'Cerai Mati'];
+
+    public const HUBUNGAN_KELUARGA = [
+        'Kepala Keluarga', 'Istri', 'Anak', 'Menantu', 'Cucu',
+        'Orang Tua', 'Mertua', 'Famili Lain', 'Lainnya',
+    ];
+
+    public const STATUS_WARGA = ['Aktif', 'Pindah', 'Meninggal'];
+
     protected $fillable = [
         'kartu_keluarga_id',
         'nik',
