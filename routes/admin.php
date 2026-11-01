@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\JenisSuratController;
 use App\Http\Controllers\Admin\SuratPengantarController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\KartuKeluargaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,10 +18,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     })->name('dashboard');
 
     // 1. Modul Kependudukan (Anggota 1)
+        // 1. Modul Kependudukan (Anggota 1)
     Route::prefix('kependudukan')->name('kependudukan.')->group(function () {
-        Route::get('/kartu-keluarga', function () {
-            return view('admin.kependudukan.kk-index');
-        })->name('kk.index');
+        Route::resource('kartu-keluarga', KartuKeluargaController::class)
+            ->except(['show'])
+            ->names('kk');
+
         Route::get('/warga', function () {
             return view('admin.kependudukan.warga-index');
         })->name('warga.index');
