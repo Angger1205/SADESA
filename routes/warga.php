@@ -32,7 +32,6 @@ Route::prefix('warga')->name('warga.')->middleware(['auth'])->group(function () 
     });
 
     // Profil Biodata Warga & Anggota Keluarga
-    Route::get('/profil', function () {
-        return view('warga.profil');
-    })->name('profil');
+    Route::get('/profil', [App\Http\Controllers\Warga\ProfilController::class, 'show'])->name('profil');
+    Route::put('/profil', [App\Http\Controllers\Warga\ProfilController::class, 'update'])->name('profil.update');
 });

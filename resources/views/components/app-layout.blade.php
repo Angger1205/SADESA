@@ -118,170 +118,312 @@
                     </div>
                 </a>
 
-                <nav class="hidden lg:flex items-center justify-center gap-1 xl:gap-2" aria-label="Navigasi Utama">
-                    <a
-                        href="{{ route('home') }}"
-                        class="px-3 py-2 min-h-[44px] inline-flex items-center rounded-lg text-sm font-bold transition-colors {{ $activeNav === 'beranda' ? 'text-desa-action underline decoration-2 underline-offset-8' : 'text-desa-dark hover:text-desa-action' }}"
-                    >
-                        Beranda
-                    </a>
-
-                    <div class="relative" data-nav-dropdown>
-                        <button
-                            type="button"
-                            aria-expanded="false"
-                            aria-haspopup="true"
-                            data-dropdown-btn
-                            class="px-3 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ $activeNav === 'profil' ? 'text-desa-action' : 'text-desa-dark hover:text-desa-action' }}"
-                        >
-                            <span>Profil Desa</span>
-                            <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-                        <div data-dropdown-menu class="hidden absolute left-0 mt-1 w-60 rounded-xl bg-white border-2 border-desa-border shadow-lg py-2 z-50">
-                            <a href="{{ route('profil.sejarah') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
-                                Sejarah Desa
-                            </a>
-                            <a href="{{ route('profil.visi-misi') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
-                                Visi & Misi Desa
-                            </a>
-                            <a href="{{ route('profil.aparatur') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
-                                Struktur Organisasi & Aparatur
-                            </a>
-                            <a href="{{ route('profil.wilayah') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
-                                Kondisi Geografis & Wilayah
-                            </a>
+                <nav class="hidden lg:flex items-center justify-center gap-1.5 xl:gap-3" aria-label="Navigasi Utama">
+                    @if (auth()->check() && auth()->user()->isAdmin())
+                        {{-- Navigasi Terpadu Khusus Administrator & Aparatur Desa (Tanpa Beranda agar Rapi, Lega & Simetris) --}}
+                        <div class="relative" data-nav-dropdown>
+                            <button
+                                type="button"
+                                aria-expanded="false"
+                                aria-haspopup="true"
+                                data-dropdown-btn
+                                class="px-3 xl:px-3.5 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ in_array($activeNav, ['kependudukan', 'kk', 'warga', 'user']) ? 'text-desa-action font-extrabold underline decoration-2 underline-offset-8' : 'text-desa-dark hover:text-desa-action' }}"
+                            >
+                                <span>Kependudukan &amp; Akun</span>
+                                <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div data-dropdown-menu class="hidden absolute left-0 mt-1 w-64 rounded-xl bg-white border-2 border-desa-border shadow-lg py-2 z-50">
+                                <a href="{{ route('admin.kependudukan.kk.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    KK (Kartu Keluarga)
+                                </a>
+                                <a href="{{ route('admin.kependudukan.warga.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Data Warga
+                                </a>
+                                <a href="{{ route('admin.kependudukan.user.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Akun Pengguna
+                                </a>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="relative" data-nav-dropdown>
-                        <button
-                            type="button"
-                            aria-expanded="false"
-                            aria-haspopup="true"
-                            data-dropdown-btn
-                            class="px-3 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ in_array($activeNav, ['berita', 'agenda', 'galeri', 'informasi']) ? 'text-desa-action' : 'text-desa-dark hover:text-desa-action' }}"
-                        >
-                            <span>Informasi Desa</span>
-                            <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-                        <div data-dropdown-menu class="hidden absolute left-0 mt-1 w-60 rounded-xl bg-white border-2 border-desa-border shadow-lg py-2 z-50">
-                            <a href="{{ route('informasi.berita.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
-                                Berita & Pengumuman Desa
-                            </a>
-                            <a href="{{ route('informasi.agenda.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
-                                Agenda Kegiatan Desa
-                            </a>
-                            <a href="{{ route('informasi.galeri.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
-                                Galeri Dokumentasi Kegiatan
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="relative" data-nav-dropdown>
-                        <button
-                            type="button"
-                            aria-expanded="false"
-                            aria-haspopup="true"
-                            data-dropdown-btn
-                            class="px-3 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ $activeNav === 'surat' ? 'text-desa-action' : 'text-desa-dark hover:text-desa-action' }}"
-                        >
-                            <span>Layanan E-Surat</span>
-                            <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-                        <div data-dropdown-menu class="hidden absolute left-0 mt-1 w-64 rounded-xl bg-white border-2 border-desa-border shadow-lg py-2 z-50">
-                            @if (auth()->check() && auth()->user()->isAdmin())
-                                <div class="px-4 py-1 text-[11px] font-extrabold uppercase tracking-wider text-desa-action">
-                                    Panel Admin &amp; Kepala Desa
-                                </div>
+                        <div class="relative" data-nav-dropdown>
+                            <button
+                                type="button"
+                                aria-expanded="false"
+                                aria-haspopup="true"
+                                data-dropdown-btn
+                                class="px-3 xl:px-3.5 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ in_array($activeNav, ['surat', 'jenis-surat']) ? 'text-desa-action font-extrabold underline decoration-2 underline-offset-8' : 'text-desa-dark hover:text-desa-action' }}"
+                            >
+                                <span>Layanan E-Surat</span>
+                                <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div data-dropdown-menu class="hidden absolute left-0 mt-1 w-64 rounded-xl bg-white border-2 border-desa-border shadow-lg py-2 z-50">
                                 <a href="{{ route('admin.surat.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
                                     Antrean Verifikasi E-Surat
                                 </a>
                                 <a href="{{ route('admin.surat.jenis') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
                                     Master 14 Jenis Surat
                                 </a>
-                            @else
+                            </div>
+                        </div>
+
+                        <a
+                            href="{{ route('admin.pengaduan.index') }}"
+                            class="px-3 xl:px-3.5 py-2 min-h-[44px] inline-flex items-center rounded-lg text-sm font-bold transition-colors {{ $activeNav === 'pengaduan' ? 'text-desa-action font-extrabold underline decoration-2 underline-offset-8' : 'text-desa-dark hover:text-desa-action' }}"
+                        >
+                            Pengaduan Warga
+                        </a>
+
+                        <div class="relative" data-nav-dropdown>
+                            <button
+                                type="button"
+                                aria-expanded="false"
+                                aria-haspopup="true"
+                                data-dropdown-btn
+                                class="px-3 xl:px-3.5 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ in_array($activeNav, ['berita', 'agenda', 'galeri', 'informasi']) ? 'text-desa-action font-extrabold underline decoration-2 underline-offset-8' : 'text-desa-dark hover:text-desa-action' }}"
+                            >
+                                <span>Informasi Desa</span>
+                                <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div data-dropdown-menu class="hidden absolute left-0 mt-1 w-60 rounded-xl bg-white border-2 border-desa-border shadow-lg py-2 z-50">
+                                <a href="{{ route('admin.informasi.berita.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Kelola Berita &amp; Pengumuman
+                                </a>
+                                <a href="{{ route('admin.informasi.agenda.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Agenda Kegiatan Desa
+                                </a>
+                                <a href="{{ route('admin.informasi.galeri.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Galeri Dokumentasi
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="relative" data-nav-dropdown>
+                            <button
+                                type="button"
+                                aria-expanded="false"
+                                aria-haspopup="true"
+                                data-dropdown-btn
+                                class="px-3 xl:px-3.5 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ in_array($activeNav, ['profil', 'aparatur']) ? 'text-desa-action font-extrabold underline decoration-2 underline-offset-8' : 'text-desa-dark hover:text-desa-action' }}"
+                            >
+                                <span>Profil Desa</span>
+                                <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div data-dropdown-menu class="hidden absolute left-0 mt-1 w-60 rounded-xl bg-white border-2 border-desa-border shadow-lg py-2 z-50">
+                                <a href="{{ route('admin.profil.edit') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Pengaturan Profil Desa
+                                </a>
+                                <a href="{{ route('admin.profil.aparatur.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Struktur Aparatur Desa
+                                </a>
+                            </div>
+                        </div>
+
+                        <a
+                            href="{{ route('admin.panduan.index') }}"
+                            class="px-3 xl:px-3.5 py-2 min-h-[44px] inline-flex items-center rounded-lg text-sm font-bold transition-colors {{ $activeNav === 'panduan' ? 'text-desa-action font-extrabold underline decoration-2 underline-offset-8' : 'text-desa-dark hover:text-desa-action' }}"
+                        >
+                            Panduan
+                        </a>
+                    @else
+                        {{-- Navigasi Publik & Portal Warga --}}
+                        <a
+                            href="{{ route('home') }}"
+                            class="px-3 py-2 min-h-[44px] inline-flex items-center rounded-lg text-sm font-bold transition-colors {{ $activeNav === 'beranda' ? 'text-desa-action underline decoration-2 underline-offset-8' : 'text-desa-dark hover:text-desa-action' }}"
+                        >
+                            Beranda
+                        </a>
+
+                        <div class="relative" data-nav-dropdown>
+                            <button
+                                type="button"
+                                aria-expanded="false"
+                                aria-haspopup="true"
+                                data-dropdown-btn
+                                class="px-3 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ $activeNav === 'profil' ? 'text-desa-action' : 'text-desa-dark hover:text-desa-action' }}"
+                            >
+                                <span>Profil Desa</span>
+                                <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div data-dropdown-menu class="hidden absolute left-0 mt-1 w-60 rounded-xl bg-white border-2 border-desa-border shadow-lg py-2 z-50">
+                                <a href="{{ route('profil.sejarah') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Sejarah Desa
+                                </a>
+                                <a href="{{ route('profil.visi-misi') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Visi &amp; Misi Desa
+                                </a>
+                                <a href="{{ route('profil.aparatur') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Struktur Organisasi &amp; Aparatur
+                                </a>
+                                <a href="{{ route('profil.wilayah') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Kondisi Geografis &amp; Wilayah
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="relative" data-nav-dropdown>
+                            <button
+                                type="button"
+                                aria-expanded="false"
+                                aria-haspopup="true"
+                                data-dropdown-btn
+                                class="px-3 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ in_array($activeNav, ['berita', 'agenda', 'galeri', 'informasi']) ? 'text-desa-action' : 'text-desa-dark hover:text-desa-action' }}"
+                            >
+                                <span>Informasi Desa</span>
+                                <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div data-dropdown-menu class="hidden absolute left-0 mt-1 w-60 rounded-xl bg-white border-2 border-desa-border shadow-lg py-2 z-50">
+                                <a href="{{ route('informasi.berita.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Berita &amp; Pengumuman Desa
+                                </a>
+                                <a href="{{ route('informasi.agenda.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Agenda Kegiatan Desa
+                                </a>
+                                <a href="{{ route('informasi.galeri.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Galeri Dokumentasi Kegiatan
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="relative" data-nav-dropdown>
+                            <button
+                                type="button"
+                                aria-expanded="false"
+                                aria-haspopup="true"
+                                data-dropdown-btn
+                                class="px-3 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ $activeNav === 'surat' ? 'text-desa-action' : 'text-desa-dark hover:text-desa-action' }}"
+                            >
+                                <span>Layanan E-Surat</span>
+                                <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div data-dropdown-menu class="hidden absolute left-0 mt-1 w-64 rounded-xl bg-white border-2 border-desa-border shadow-lg py-2 z-50">
                                 <a href="{{ route('warga.surat.create') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
                                     Ajukan Surat Pengantar
                                 </a>
                                 <a href="{{ route('warga.surat.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
                                     Riwayat &amp; Status Permohonan
                                 </a>
-                            @endif
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="relative" data-nav-dropdown>
-                        <button
-                            type="button"
-                            aria-expanded="false"
-                            aria-haspopup="true"
-                            data-dropdown-btn
-                            class="px-3 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ $activeNav === 'pengaduan' ? 'text-desa-action' : 'text-desa-dark hover:text-desa-action' }}"
-                        >
-                            <span>Pengaduan Warga</span>
-                            <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-                        <div data-dropdown-menu class="hidden absolute left-0 mt-1 w-60 rounded-xl bg-white border-2 border-desa-border shadow-lg py-2 z-50">
-                            <a href="{{ route('pengaduan.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
-                                Buat Pengaduan & Aspirasi
-                            </a>
-                            <a href="{{ route('pengaduan.lacak') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
-                                Lacak Tiket Aduan Warga
-                            </a>
-                            <a href="{{ route('warga.pengaduan.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
-                                Riwayat Pengaduan Saya
-                            </a>
+                        <div class="relative" data-nav-dropdown>
+                            <button
+                                type="button"
+                                aria-expanded="false"
+                                aria-haspopup="true"
+                                data-dropdown-btn
+                                class="px-3 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ $activeNav === 'pengaduan' ? 'text-desa-action' : 'text-desa-dark hover:text-desa-action' }}"
+                            >
+                                <span>Pengaduan Warga</span>
+                                <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div data-dropdown-menu class="hidden absolute left-0 mt-1 w-60 rounded-xl bg-white border-2 border-desa-border shadow-lg py-2 z-50">
+                                <a href="{{ route('pengaduan.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Buat Pengaduan &amp; Aspirasi
+                                </a>
+                                <a href="{{ route('pengaduan.lacak') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Lacak Tiket Aduan Warga
+                                </a>
+                                <a href="{{ route('warga.pengaduan.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Riwayat Pengaduan Saya
+                                </a>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="relative" data-nav-dropdown>
-                        <button
-                            type="button"
-                            aria-expanded="false"
-                            aria-haspopup="true"
-                            data-dropdown-btn
-                            class="px-3 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ $activeNav === 'panduan' ? 'text-desa-action' : 'text-desa-dark hover:text-desa-action' }}"
-                        >
-                            <span>Panduan</span>
-                            <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-                        <div data-dropdown-menu class="hidden absolute right-0 mt-1 w-60 rounded-xl bg-white border-2 border-desa-border shadow-lg py-2 z-50">
-                            <a href="{{ route('panduan.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
-                                Panduan Layanan &amp; Formulir
-                            </a>
+                        <div class="relative" data-nav-dropdown>
+                            <button
+                                type="button"
+                                aria-expanded="false"
+                                aria-haspopup="true"
+                                data-dropdown-btn
+                                class="px-3 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ $activeNav === 'panduan' ? 'text-desa-action' : 'text-desa-dark hover:text-desa-action' }}"
+                            >
+                                <span>Panduan</span>
+                                <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                            <div data-dropdown-menu class="hidden absolute right-0 mt-1 w-60 rounded-xl bg-white border-2 border-desa-border shadow-lg py-2 z-50">
+                                <a href="{{ route('panduan.index') }}" class="flex items-center min-h-[44px] px-4 py-2 text-sm font-semibold text-desa-dark hover:bg-desa-soft">
+                                    Panduan Layanan &amp; Formulir
+                                </a>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 </nav>
 
                 <div class="flex items-center gap-2">
                     @auth
-                        <a
-                            href="{{ auth()->user()->isAdmin() ? route('admin.surat.index') : route('warga.surat.index') }}"
-                            class="hidden sm:inline-flex items-center min-h-[44px] px-3.5 py-1.5 rounded-lg bg-desa-bright text-desa-dark border border-desa-border text-xs font-bold hover:bg-white transition-colors"
-                        >
-                            {{ auth()->user()->name }} ({{ strtoupper(auth()->user()->role) }})
-                        </a>
-                        @if (Route::has('logout'))
-                            <form action="{{ route('logout') }}" method="POST" class="inline">
-                                @csrf
-                                <button
-                                    type="submit"
-                                    class="inline-flex items-center min-h-[44px] px-3.5 py-1.5 rounded-lg bg-desa-dark text-white text-xs font-bold hover:bg-desa-action transition-colors cursor-pointer"
+                        {{-- Menu Akun Minimalis Berbasis Ikon (Berlaku Global untuk Semua Halaman & Role) --}}
+                        <div class="relative" data-nav-dropdown>
+                            <button
+                                type="button"
+                                aria-expanded="false"
+                                aria-haspopup="true"
+                                data-dropdown-btn
+                                class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] w-11 h-11 rounded-full bg-desa-dark text-white hover:bg-desa-action border-2 border-desa-border transition-colors cursor-pointer shadow-xs focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-desa-action overflow-hidden"
+                                title="Menu Akun: {{ auth()->user()->name }}"
+                                aria-label="Menu Akun: {{ auth()->user()->name }}"
+                            >
+                                @if (auth()->user()->avatar && file_exists(public_path(auth()->user()->avatar)))
+                                    <img src="{{ asset(auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}" class="w-full h-full object-cover rounded-full" />
+                                @else
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                @endif
+                            </button>
+                            <div
+                                data-dropdown-menu
+                                class="hidden absolute right-0 mt-2 w-52 rounded-2xl bg-white border-2 border-desa-border shadow-xl p-2 z-50 space-y-1"
+                            >
+                                @php
+                                    $profilUrl = auth()->user()->isAdmin()
+                                        ? (Route::has('admin.profil.saya') ? route('admin.profil.saya') : (Route::has('admin.profil.edit') ? route('admin.profil.edit') : route('home')))
+                                        : (Route::has('warga.profil') ? route('warga.profil') : route('home'));
+                                @endphp
+
+                                <a
+                                    href="{{ $profilUrl }}"
+                                    class="flex items-center gap-2.5 px-3 py-2 text-sm font-bold text-desa-dark hover:bg-desa-soft rounded-xl transition-colors min-h-[44px]"
                                 >
-                                    Keluar
-                                </button>
-                            </form>
-                        @endif
+                                    <svg class="w-4 h-4 text-desa-action shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    <span>Profil Saya</span>
+                                </a>
+
+                                @if (Route::has('logout'))
+                                    <form action="{{ route('logout') }}" method="POST" class="w-full pt-1">
+                                        @csrf
+                                        <button
+                                            type="submit"
+                                            class="w-full flex items-center justify-center gap-2 min-h-[44px] px-4 py-2 rounded-xl bg-red-600 text-white font-extrabold text-xs hover:bg-red-700 transition-colors cursor-pointer shadow-xs"
+                                        >
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                            </svg>
+                                            <span>Keluar (Logout)</span>
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
                     @else
                         <a
                             href="{{ Route::has('login') ? route('login') : '#' }}"
@@ -314,33 +456,55 @@
                 aria-label="Navigasi Seluler"
                 class="hidden lg:hidden border-t border-desa-border py-3 space-y-1"
             >
-                <a href="{{ route('home') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'beranda' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
-                    Beranda
-                </a>
-                <a href="{{ route('profil.sejarah') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'profil' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
-                    Profil Desa (Sejarah, Visi Misi, Aparatur &amp; Wilayah)
-                </a>
-                <a href="{{ route('informasi.berita.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'berita' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
-                    Berita &amp; Pengumuman Desa
-                </a>
-                <a href="{{ route('informasi.agenda.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'agenda' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
-                    Agenda Kegiatan Desa
-                </a>
-                <a href="{{ route('informasi.galeri.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'galeri' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
-                    Galeri Dokumentasi Kegiatan
-                </a>
-                <a href="{{ auth()->check() && auth()->user()->isAdmin() ? route('admin.surat.index') : route('warga.surat.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'surat' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
-                    Layanan E-Surat
-                </a>
-                <a href="{{ route('pengaduan.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'pengaduan' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
-                    Pengaduan &amp; Aspirasi Warga
-                </a>
-                <a href="{{ route('pengaduan.lacak') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold text-desa-dark hover:bg-desa-bright">
-                    Lacak Tiket Aduan Warga
-                </a>
-                <a href="{{ route('panduan.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'panduan' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
-                    Panduan Layanan &amp; Formulir
-                </a>
+                @if (auth()->check() && auth()->user()->isAdmin())
+                    <a href="{{ route('admin.kependudukan.kk.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ in_array($activeNav, ['kependudukan', 'kk', 'warga', 'user']) ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                        Kependudukan &amp; Akun Pengguna
+                    </a>
+                    <a href="{{ route('admin.surat.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ in_array($activeNav, ['surat', 'jenis-surat']) ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                        Layanan E-Surat Desa
+                    </a>
+                    <a href="{{ route('admin.pengaduan.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'pengaduan' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                        Pengaduan Warga
+                    </a>
+                    <a href="{{ route('admin.informasi.berita.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ in_array($activeNav, ['berita', 'agenda', 'galeri', 'informasi']) ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                        Informasi Desa (Berita &amp; Agenda)
+                    </a>
+                    <a href="{{ route('admin.profil.edit') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ in_array($activeNav, ['profil', 'aparatur']) ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                        Profil &amp; Aparatur Desa
+                    </a>
+                    <a href="{{ route('admin.panduan.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'panduan' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                        Panduan Layanan
+                    </a>
+
+                @else
+                    <a href="{{ route('home') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'beranda' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                        Beranda
+                    </a>
+                    <a href="{{ route('profil.sejarah') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'profil' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                        Profil Desa (Sejarah, Visi Misi, Aparatur &amp; Wilayah)
+                    </a>
+                    <a href="{{ route('informasi.berita.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'berita' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                        Berita &amp; Pengumuman Desa
+                    </a>
+                    <a href="{{ route('informasi.agenda.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'agenda' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                        Agenda Kegiatan Desa
+                    </a>
+                    <a href="{{ route('informasi.galeri.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'galeri' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                        Galeri Dokumentasi Kegiatan
+                    </a>
+                    <a href="{{ route('warga.surat.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'surat' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                        Layanan E-Surat
+                    </a>
+                    <a href="{{ route('pengaduan.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'pengaduan' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                        Pengaduan &amp; Aspirasi Warga
+                    </a>
+                    <a href="{{ route('pengaduan.lacak') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold text-desa-dark hover:bg-desa-bright">
+                        Lacak Tiket Aduan Warga
+                    </a>
+                    <a href="{{ route('panduan.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'panduan' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                        Panduan Layanan &amp; Formulir
+                    </a>
+                @endif
             </nav>
         </div>
     </header>

@@ -1,0 +1,423 @@
+<x-admin-layout :title="'Profil Saya - Administrator Desa'" activeMenu="user" subtitle="Kelola foto profil akun aparatur serta tinjau data kependudukan Anda.">
+    <div class="space-y-6">
+        <!-- Notifikasi Pesan Sukses / Error -->
+        @if (session('sukses'))
+            <div class="p-4 rounded-xl bg-emerald-50 border-2 border-emerald-600 text-emerald-950 font-bold text-sm flex items-center gap-3">
+                <svg class="w-5 h-5 text-emerald-700 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>{{ session('sukses') }}</span>
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="p-4 rounded-xl bg-red-50 border-2 border-red-600 text-red-950 font-bold text-sm space-y-1">
+                <div class="flex items-center gap-2 text-red-700">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    <span>Terdapat kendala pada pengisian formulir:</span>
+                </div>
+                <ul class="list-disc list-inside text-xs font-semibold pl-2 space-y-0.5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <!-- Grid Konten Profil -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <!-- Kolom Kiri: Foto Profil & Akun (lg:col-span-4) -->
+            <div class="lg:col-span-4 space-y-6">
+                <!-- Kartu Foto Profil & Identitas Akun -->
+                <div class="bg-white rounded-2xl border-2 border-desa-border p-6 shadow-xs text-center">
+                    <div class="relative inline-block mx-auto mb-4">
+                        @if ($user->avatar && file_exists(public_path($user->avatar)))
+                            <img
+                                id="avatar-preview-img-admin"
+                                src="{{ asset($user->avatar) }}"
+                                alt="Foto Profil {{ $user->name }}"
+                                class="w-32 h-32 rounded-full object-cover border-4 border-desa-border shadow-md mx-auto"
+                            />
+                        @else
+                            <div
+                                id="avatar-fallback-admin"
+                                class="w-32 h-32 rounded-full bg-desa-dark text-white font-extrabold text-3xl flex items-center justify-center border-4 border-desa-border shadow-md mx-auto"
+                            >
+                                {{ strtoupper(substr($user->name, 0, 2)) }}
+                            </div>
+                            <img
+                                id="avatar-preview-img-admin"
+                                src=""
+                                alt="Foto Profil Baru"
+                                class="w-32 h-32 rounded-full object-cover border-4 border-desa-border shadow-md mx-auto hidden"
+                            />
+                        @endif
+
+                        <span class="absolute bottom-1 right-1 w-6 h-6 rounded-full bg-desa-action border-2 border-white flex items-center justify-center text-white" title="Akun Aparatur / Admin">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </span>
+                    </div>
+
+                    <h2 class="text-xl font-extrabold text-desa-dark">
+                        {{ $warga ? $warga->nama_lengkap : $user->name }}
+                    </h2>
+                    <p class="text-xs font-mono text-desa-muted mt-0.5">
+                        {{ $user->email }}
+                    </p>
+
+                    <div class="mt-3 flex flex-wrap items-center justify-center gap-1.5">
+                        <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-desa-dark text-white">
+                            Hak Akses: {{ strtoupper($user->role) }}
+                        </span>
+                        @if ($warga)
+                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-950 border border-emerald-700">
+                                Terhubung Data Warga
+                            </span>
+                        @else
+                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-desa-soft text-desa-dark border border-desa-border">
+                                Akun Sistem
+                            </span>
+                        @endif
+                    </div>
+
+                    <!-- Form Ganti Foto Profil & Kontak -->
+                    <form
+                        action="{{ route('admin.profil.saya.update') }}"
+                        method="POST"
+                        enctype="multipart/form-data"
+                        class="mt-6 text-left border-t-2 border-desa-border/30 pt-5 space-y-4"
+                    >
+                        @csrf
+                        @method('PUT')
+
+                        <div>
+                            <label for="avatar_admin" class="block text-xs font-bold text-desa-dark mb-1">
+                                Pilih Foto Profil Baru
+                            </label>
+                            <input
+                                type="file"
+                                id="avatar_admin"
+                                name="avatar"
+                                accept="image/png, image/jpeg, image/jpg, image/webp"
+                                class="w-full text-xs text-desa-dark file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-2 file:border-desa-border file:text-xs file:font-bold file:bg-desa-soft file:text-desa-dark hover:file:bg-desa-bright cursor-pointer"
+                            />
+                            <p class="text-[11px] text-desa-muted mt-1 leading-tight">
+                                Format: JPG, JPEG, PNG, WEBP. Ukuran maksimal 2 MB.
+                            </p>
+                        </div>
+
+                        @if ($user->avatar && file_exists(public_path($user->avatar)))
+                            <div class="flex items-center gap-2 pt-1">
+                                <input
+                                    type="checkbox"
+                                    id="hapus_avatar_admin"
+                                    name="hapus_avatar"
+                                    value="1"
+                                    class="w-4 h-4 rounded text-desa-action border-2 border-desa-border focus:ring-desa-action"
+                                />
+                                <label for="hapus_avatar_admin" class="text-xs font-bold text-red-600 cursor-pointer">
+                                    Hapus foto profil saat ini (gunakan inisial)
+                                </label>
+                            </div>
+                        @endif
+
+                        <div>
+                            <label for="email_admin" class="block text-xs font-bold text-desa-dark mb-1">
+                                Alamat Email Akun <span class="text-red-600">*</span>
+                            </label>
+                            <input
+                                type="email"
+                                id="email_admin"
+                                name="email"
+                                value="{{ old('email', $user->email) }}"
+                                required
+                                class="w-full min-h-[44px] px-3.5 py-2 rounded-lg bg-desa-mist border-2 border-desa-border text-sm text-desa-dark focus:outline-none focus:ring-2 focus:ring-desa-action"
+                            />
+                        </div>
+
+                        @if ($warga)
+                            <div>
+                                <label for="no_hp_admin" class="block text-xs font-bold text-desa-dark mb-1">
+                                    Nomor Telepon / WhatsApp
+                                </label>
+                                <input
+                                    type="text"
+                                    id="no_hp_admin"
+                                    name="no_hp"
+                                    value="{{ old('no_hp', $warga->no_hp) }}"
+                                    placeholder="Contoh: 081234567890"
+                                    class="w-full min-h-[44px] px-3.5 py-2 rounded-lg bg-desa-mist border-2 border-desa-border text-sm text-desa-dark focus:outline-none focus:ring-2 focus:ring-desa-action"
+                                />
+                            </div>
+                        @endif
+
+                        <div class="pt-2">
+                            <x-button variant="primary" type="submit" class="w-full">
+                                Simpan Perubahan Profil
+                            </x-button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Kartu Ubah Kata Sandi Akun -->
+                <div class="bg-white rounded-2xl border-2 border-desa-border p-6 shadow-xs">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-9 h-9 rounded-lg bg-desa-soft border border-desa-border flex items-center justify-center text-desa-action shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-extrabold text-desa-dark">Keamanan Kata Sandi</h3>
+                            <p class="text-[11px] text-desa-muted">Perbarui kata sandi akun administrator</p>
+                        </div>
+                    </div>
+
+                    <form
+                        action="{{ route('admin.profil.saya.update') }}"
+                        method="POST"
+                        class="space-y-4"
+                    >
+                        @csrf
+                        @method('PUT')
+                        <input type="hidden" name="email" value="{{ $user->email }}" />
+
+                        <div>
+                            <label for="password_lama_admin" class="block text-xs font-bold text-desa-dark mb-1">
+                                Kata Sandi Saat Ini
+                            </label>
+                            <input
+                                type="password"
+                                id="password_lama_admin"
+                                name="password_lama"
+                                class="w-full min-h-[44px] px-3.5 py-2 rounded-lg bg-desa-mist border-2 border-desa-border text-sm text-desa-dark focus:outline-none focus:ring-2 focus:ring-desa-action"
+                                placeholder="Masukkan kata sandi lama"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="password_baru_admin" class="block text-xs font-bold text-desa-dark mb-1">
+                                Kata Sandi Baru
+                            </label>
+                            <input
+                                type="password"
+                                id="password_baru_admin"
+                                name="password_baru"
+                                class="w-full min-h-[44px] px-3.5 py-2 rounded-lg bg-desa-mist border-2 border-desa-border text-sm text-desa-dark focus:outline-none focus:ring-2 focus:ring-desa-action"
+                                placeholder="Minimal 8 karakter"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="password_baru_confirmation_admin" class="block text-xs font-bold text-desa-dark mb-1">
+                                Ulangi Kata Sandi Baru
+                            </label>
+                            <input
+                                type="password"
+                                id="password_baru_confirmation_admin"
+                                name="password_baru_confirmation"
+                                class="w-full min-h-[44px] px-3.5 py-2 rounded-lg bg-desa-mist border-2 border-desa-border text-sm text-desa-dark focus:outline-none focus:ring-2 focus:ring-desa-action"
+                                placeholder="Ketik ulang kata sandi baru"
+                            />
+                        </div>
+
+                        <div class="pt-2">
+                            <x-button variant="secondary" type="submit" class="w-full">
+                                Perbarui Kata Sandi
+                            </x-button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Kolom Kanan: Data Kependudukan Terintegrasi (lg:col-span-8) -->
+            <div class="lg:col-span-8 space-y-6">
+                @if ($warga)
+                    <!-- Kartu Biodata Warga Resmi -->
+                    <div class="bg-white rounded-2xl border-2 border-desa-border p-6 shadow-xs">
+                        <div class="flex flex-wrap items-center justify-between gap-3 border-b-2 border-desa-border/30 pb-4 mb-5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-desa-soft border border-desa-border flex items-center justify-center text-desa-action shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-extrabold text-desa-dark">
+                                        Biodata Kependudukan (KTP-el)
+                                    </h3>
+                                    <p class="text-xs text-desa-muted">
+                                        Akun ini terhubung langsung dengan Master Penduduk Desa Pabelan.
+                                    </p>
+                                </div>
+                            </div>
+                            <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-950 border border-emerald-700">
+                                Status: {{ $warga->status_warga ?? 'Aktif' }}
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-3.5 rounded-xl bg-desa-mist border border-desa-border/50">
+                                <p class="text-[11px] font-bold text-desa-muted uppercase tracking-wider">
+                                    Nomor Induk Kependudukan (NIK)
+                                </p>
+                                <p class="text-base font-extrabold font-mono text-desa-dark mt-0.5">
+                                    {{ $warga->nik }}
+                                </p>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl bg-desa-mist border border-desa-border/50">
+                                <p class="text-[11px] font-bold text-desa-muted uppercase tracking-wider">
+                                    Nama Lengkap (Sesuai KTP-el)
+                                </p>
+                                <p class="text-base font-extrabold text-desa-dark mt-0.5">
+                                    {{ $warga->nama_lengkap }}
+                                </p>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl bg-desa-mist border border-desa-border/50">
+                                <p class="text-[11px] font-bold text-desa-muted uppercase tracking-wider">
+                                    Tempat &amp; Tanggal Lahir
+                                </p>
+                                <p class="text-sm font-bold text-desa-dark mt-0.5">
+                                    {{ $warga->tempat_lahir }}, {{ $warga->tanggal_lahir ? $warga->tanggal_lahir->translatedFormat('d F Y') : '-' }}
+                                    @if ($warga->tanggal_lahir)
+                                        <span class="text-xs font-normal text-desa-muted">({{ $warga->tanggal_lahir->age }} Tahun)</span>
+                                    @endif
+                                </p>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl bg-desa-mist border border-desa-border/50">
+                                <p class="text-[11px] font-bold text-desa-muted uppercase tracking-wider">
+                                    Jenis Kelamin
+                                </p>
+                                <p class="text-sm font-bold text-desa-dark mt-0.5">
+                                    {{ $warga->jenis_kelamin }}
+                                </p>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl bg-desa-mist border border-desa-border/50">
+                                <p class="text-[11px] font-bold text-desa-muted uppercase tracking-wider">
+                                    Agama
+                                </p>
+                                <p class="text-sm font-bold text-desa-dark mt-0.5">
+                                    {{ $warga->agama }}
+                                </p>
+                            </div>
+
+                            <div class="p-3.5 rounded-xl bg-desa-mist border border-desa-border/50">
+                                <p class="text-[11px] font-bold text-desa-muted uppercase tracking-wider">
+                                    Status Perkawinan
+                                </p>
+                                <p class="text-sm font-bold text-desa-dark mt-0.5">
+                                    {{ $warga->status_perkawinan }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kartu KK & Domisili -->
+                    @if ($kartuKeluarga)
+                        <div class="bg-white rounded-2xl border-2 border-desa-border p-6 shadow-xs">
+                            <div class="flex items-center gap-3 border-b-2 border-desa-border/30 pb-4 mb-5">
+                                <div class="w-10 h-10 rounded-xl bg-desa-soft border border-desa-border flex items-center justify-center text-desa-action shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-extrabold text-desa-dark">
+                                        Data Kartu Keluarga (KK) &amp; Domisili
+                                    </h3>
+                                    <p class="text-xs text-desa-muted">
+                                        Tercatat di data kependudukan Desa Pabelan.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="p-3.5 rounded-xl bg-desa-mist border border-desa-border/50">
+                                    <p class="text-[11px] font-bold text-desa-muted uppercase tracking-wider">
+                                        Nomor Kartu Keluarga
+                                    </p>
+                                    <p class="text-base font-extrabold font-mono text-desa-dark mt-0.5">
+                                        {{ $kartuKeluarga->no_kk }}
+                                    </p>
+                                </div>
+
+                                <div class="p-3.5 rounded-xl bg-desa-mist border border-desa-border/50">
+                                    <p class="text-[11px] font-bold text-desa-muted uppercase tracking-wider">
+                                        Kepala Keluarga
+                                    </p>
+                                    <p class="text-base font-extrabold text-desa-dark mt-0.5">
+                                        {{ $kartuKeluarga->kepala_keluarga }}
+                                    </p>
+                                </div>
+
+                                <div class="p-3.5 rounded-xl bg-desa-mist border border-desa-border/50 md:col-span-2">
+                                    <p class="text-[11px] font-bold text-desa-muted uppercase tracking-wider">
+                                        Alamat Lengkap Domisili
+                                    </p>
+                                    <p class="text-sm font-bold text-desa-dark mt-0.5">
+                                        {{ $kartuKeluarga->alamat }}, RT {{ $kartuKeluarga->rt }}/RW {{ $kartuKeluarga->rw }}, {{ $kartuKeluarga->dusun }}, Desa Pabelan, Kec. Kartasura, Kab. Sukoharjo
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                @else
+                    <!-- Tampilan Bila Akun Belum Ditautkan ke Data Warga -->
+                    <div class="bg-white rounded-2xl border-2 border-desa-border p-8 shadow-xs text-center space-y-4">
+                        <div class="w-16 h-16 rounded-full bg-desa-soft text-desa-action flex items-center justify-center mx-auto border-2 border-desa-border">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-desa-dark">
+                            Akun Administrator Sistem
+                        </h3>
+                        <p class="text-sm text-desa-muted max-w-lg mx-auto leading-relaxed">
+                            Akun ini saat ini beroperasi murni sebagai akun pengelola administratif sistem Desa Pabelan dan belum terhubung ke Nomor Induk Kependudukan (NIK) warga. Anda dapat menautkan akun ini ke data warga sewaktu-waktu melalui menu Master Kependudukan &amp; Akun.
+                        </p>
+                        <div class="pt-2">
+                            <x-button variant="secondary" href="{{ route('admin.kependudukan.user.index') }}">
+                                Buka Pengaturan Akun Pengguna
+                            </x-button>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    {{-- Script Pratinjau Foto Profil Langsung di Browser --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const avatarInput = document.getElementById('avatar_admin');
+            const previewImg = document.getElementById('avatar-preview-img-admin');
+            const fallbackAvatar = document.getElementById('avatar-fallback-admin');
+
+            if (avatarInput && previewImg) {
+                avatarInput.addEventListener('change', function () {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            previewImg.src = e.target.result;
+                            previewImg.classList.remove('hidden');
+                            if (fallbackAvatar) {
+                                fallbackAvatar.classList.add('hidden');
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        });
+    </script>
+</x-admin-layout>
+

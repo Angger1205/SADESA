@@ -93,6 +93,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         })->name('aparatur.index');
     });
 
+    // Profil Akun Pengguna Administrator / Aparatur
+    Route::get('/profil-saya', [App\Http\Controllers\Admin\ProfilSayaController::class, 'show'])->name('profil.saya');
+    Route::put('/profil-saya', [App\Http\Controllers\Admin\ProfilSayaController::class, 'update'])->name('profil.saya.update');
+
     // 6. Modul Panduan & Tutorial (Anggota 6)
     Route::prefix('panduan')->name('panduan.')->group(function () {
         Route::get('/', function () {

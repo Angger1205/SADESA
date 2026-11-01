@@ -3,29 +3,29 @@
         @include('admin.kependudukan._tab', ['aktif' => 'kk'])
         @include('admin.kependudukan._pesan')
         
-        <div class="flex justify-end">
+        <div class="flex flex-wrap items-end justify-between gap-3">
+            <form method="GET" action="{{ route('admin.kependudukan.kk.index') }}" class="flex flex-wrap items-end gap-3 grow">
+                <div class="grow sm:max-w-md">
+                    <label for="cari" class="block text-xs font-bold text-desa-dark mb-1">Cari Kartu Keluarga</label>
+                    <input
+                        type="text"
+                        id="cari"
+                        name="cari"
+                        value="{{ $cari }}"
+                        placeholder="Ketik No. KK atau nama kepala keluarga"
+                        class="w-full min-h-[44px] px-3.5 py-2 rounded-lg bg-desa-mist border-2 border-desa-border text-sm text-desa-dark focus:outline-none focus:ring-2 focus:ring-desa-action"
+                    />
+                </div>
+                <x-button variant="primary" type="submit">Cari</x-button>
+                @if ($cari)
+                    <x-button variant="secondary" href="{{ route('admin.kependudukan.kk.index') }}">Reset</x-button>
+                @endif
+            </form>
+
             <x-button variant="primary" href="{{ route('admin.kependudukan.kk.create') }}">
                 + Tambah Kartu Keluarga
             </x-button>
         </div>
-
-        <form method="GET" action="{{ route('admin.kependudukan.kk.index') }}" class="flex flex-wrap items-end gap-3">
-            <div class="grow sm:max-w-md">
-                <label for="cari" class="block text-xs font-bold text-desa-dark mb-1">Cari Kartu Keluarga</label>
-                <input
-                    type="text"
-                    id="cari"
-                    name="cari"
-                    value="{{ $cari }}"
-                    placeholder="Ketik No. KK atau nama kepala keluarga"
-                    class="w-full min-h-[44px] px-3.5 py-2 rounded-lg bg-desa-mist border-2 border-desa-border text-sm text-desa-dark focus:outline-none focus:ring-2 focus:ring-desa-action"
-                />
-            </div>
-            <x-button variant="primary" type="submit">Cari</x-button>
-            @if ($cari)
-                <x-button variant="secondary" href="{{ route('admin.kependudukan.kk.index') }}">Reset</x-button>
-            @endif
-        </form>
 
         @if ($kartuKeluargas->isEmpty())
             <x-ui-state
