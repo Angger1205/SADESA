@@ -2,6 +2,12 @@
     <div class="space-y-5">
         @include('admin.kependudukan._tab', ['aktif' => 'kk'])
         @include('admin.kependudukan._pesan')
+        
+        <div class="flex justify-end">
+            <x-button variant="primary" href="{{ route('admin.kependudukan.kk.create') }}">
+                + Tambah Kartu Keluarga
+            </x-button>
+        </div>
 
         <form method="GET" action="{{ route('admin.kependudukan.kk.index') }}" class="flex flex-wrap items-end gap-3">
             <div class="grow sm:max-w-md">

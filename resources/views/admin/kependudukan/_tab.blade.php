@@ -3,6 +3,11 @@
         'kk' => ['Kartu Keluarga', route('admin.kependudukan.kk.index')],
         'warga' => ['Data Warga', route('admin.kependudukan.warga.index')],
     ];
+
+    // Tab akun hanya muncul untuk Administrator
+    if (auth()->user()->role === 'admin') {
+        $tab['user'] = ['Akun Pengguna', route('admin.kependudukan.user.index')];
+    }
 @endphp
 
 <div class="flex flex-wrap gap-2" role="navigation" aria-label="Menu Kependudukan">
