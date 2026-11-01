@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\JenisSuratController;
 use App\Http\Controllers\Admin\SuratPengantarController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\KartuKeluargaController;
+use App\Http\Controllers\Admin\WargaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +25,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
             ->except(['show'])
             ->names('kk');
 
-        Route::get('/warga', function () {
-            return view('admin.kependudukan.warga-index');
-        })->name('warga.index');
+        Route::resource('warga', WargaController::class)->except(['show']);
     });
 
     // 2. Modul Pelayanan & Cetak Surat (Anggota 2: Nadhif Athaasyam Nurdewana - K3524062)

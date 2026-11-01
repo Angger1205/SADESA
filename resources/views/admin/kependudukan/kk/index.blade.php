@@ -1,21 +1,7 @@
 <x-admin-layout title="Data Kartu Keluarga" activeMenu="kk">
     <div class="space-y-5">
-        @if (session('sukses'))
-            <div role="status" class="px-4 py-3 rounded-lg bg-emerald-100 text-emerald-950 border border-emerald-700 text-sm font-bold">
-                {{ session('sukses') }}
-            </div>
-        @endif
-        @if (session('gagal'))
-            <div role="alert" class="px-4 py-3 rounded-lg bg-red-100 text-red-950 border border-red-700 text-sm font-bold">
-                {{ session('gagal') }}
-            </div>
-        @endif
-
-        <div class="flex justify-end">
-            <x-button variant="primary" href="{{ route('admin.kependudukan.kk.create') }}">
-                + Tambah Kartu Keluarga
-            </x-button>
-        </div>
+        @include('admin.kependudukan._tab', ['aktif' => 'kk'])
+        @include('admin.kependudukan._pesan')
 
         <form method="GET" action="{{ route('admin.kependudukan.kk.index') }}" class="flex flex-wrap items-end gap-3">
             <div class="grow sm:max-w-md">
