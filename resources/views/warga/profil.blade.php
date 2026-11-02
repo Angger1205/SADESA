@@ -1,27 +1,20 @@
-<x-app-layout :title="'Profil Saya - Layanan Mandiri Warga Desa Pabelan'" activeNav="profil">
+<x-app-layout :title="'Profil Saya - Layanan Mandiri Warga Desa Pabelan'" activeNav="profil-saya">
     <x-section-wrapper bgVariant="mist">
         <div class="space-y-6">
             <!-- Header Kartu Profil -->
-            <div class="bg-white rounded-2xl border-2 border-desa-border p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-desa-soft text-desa-dark border border-desa-border mb-2">
-                        <svg class="w-3.5 h-3.5 text-desa-action" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                        <span>Portal Layanan Mandiri Warga • Desa Pabelan</span>
-                    </span>
-                    <h1 class="text-2xl sm:text-3xl font-extrabold text-desa-dark tracking-tight">
-                        Profil Saya &amp; Integrasi Data Kependudukan
-                    </h1>
-                    <p class="text-sm text-desa-muted mt-1">
-                        Kelola foto profil akun mandiri dan tinjau sinkronisasi data kependudukan resmi Anda di Pemerintah Desa Pabelan.
-                    </p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <x-button variant="secondary" href="{{ route('warga.surat.index') }}">
-                        Riwayat Surat Saya
-                    </x-button>
-                </div>
+            <div class="bg-white rounded-2xl border-2 border-desa-border p-6 shadow-xs">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-desa-soft text-desa-dark border border-desa-border mb-2">
+                    <svg class="w-3.5 h-3.5 text-desa-action" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span>Portal Layanan Mandiri Warga • Desa Pabelan</span>
+                </span>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-desa-dark tracking-tight">
+                    Profil Saya
+                </h1>
+                <p class="text-sm text-desa-muted mt-1">
+                    Kelola foto profil akun mandiri dan tinjau sinkronisasi data kependudukan resmi Anda di Pemerintah Desa Pabelan.
+                </p>
             </div>
 
             <!-- Notifikasi Pesan Sukses / Error -->

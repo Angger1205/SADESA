@@ -209,7 +209,7 @@
                                 aria-expanded="false"
                                 aria-haspopup="true"
                                 data-dropdown-btn
-                                class="px-3 xl:px-3.5 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ in_array($activeNav, ['profil', 'aparatur']) ? 'text-desa-action font-extrabold underline decoration-2 underline-offset-8' : 'text-desa-dark hover:text-desa-action' }}"
+                                class="px-3 xl:px-3.5 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ in_array($activeNav, ['profil-desa', 'aparatur']) ? 'text-desa-action font-extrabold underline decoration-2 underline-offset-8' : 'text-desa-dark hover:text-desa-action' }}"
                             >
                                 <span>Profil Desa</span>
                                 <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -247,7 +247,7 @@
                                 aria-expanded="false"
                                 aria-haspopup="true"
                                 data-dropdown-btn
-                                class="px-3 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ $activeNav === 'profil' ? 'text-desa-action' : 'text-desa-dark hover:text-desa-action' }}"
+                                class="px-3 py-2 min-h-[44px] inline-flex items-center gap-1.5 rounded-lg text-sm font-bold transition-colors cursor-pointer {{ in_array($activeNav, ['profil-desa', 'sejarah', 'visi-misi', 'wilayah']) ? 'text-desa-action font-extrabold underline decoration-2 underline-offset-8' : 'text-desa-dark hover:text-desa-action' }}"
                             >
                                 <span>Profil Desa</span>
                                 <svg class="w-4 h-4 text-desa-action transition-transform duration-150" data-dropdown-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -376,7 +376,7 @@
                                 aria-expanded="false"
                                 aria-haspopup="true"
                                 data-dropdown-btn
-                                class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] w-11 h-11 rounded-full bg-desa-dark text-white hover:bg-desa-action border-2 border-desa-border transition-colors cursor-pointer shadow-xs focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-desa-action overflow-hidden"
+                                class="inline-flex items-center justify-center min-h-[44px] min-w-[44px] w-11 h-11 rounded-full bg-desa-dark text-white hover:bg-desa-action border-2 transition-colors cursor-pointer shadow-xs focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-desa-action overflow-hidden {{ in_array($activeNav, ['profil', 'profil-saya']) ? 'border-desa-action ring-4 ring-desa-action/40' : 'border-desa-border' }}"
                                 title="Menu Akun: {{ auth()->user()->name }}"
                                 aria-label="Menu Akun: {{ auth()->user()->name }}"
                             >
@@ -400,9 +400,9 @@
 
                                 <a
                                     href="{{ $profilUrl }}"
-                                    class="flex items-center gap-2.5 px-3 py-2 text-sm font-bold text-desa-dark hover:bg-desa-soft rounded-xl transition-colors min-h-[44px]"
+                                    class="flex items-center gap-2.5 px-3 py-2 text-sm font-bold rounded-xl transition-colors min-h-[44px] {{ in_array($activeNav, ['profil', 'profil-saya']) ? 'bg-desa-action text-white font-extrabold' : 'text-desa-dark hover:bg-desa-soft' }}"
                                 >
-                                    <svg class="w-4 h-4 text-desa-action shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <svg class="w-4 h-4 {{ in_array($activeNav, ['profil', 'profil-saya']) ? 'text-white' : 'text-desa-action' }} shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
                                     <span>Profil Saya</span>
@@ -469,7 +469,7 @@
                     <a href="{{ route('admin.informasi.berita.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ in_array($activeNav, ['berita', 'agenda', 'galeri', 'informasi']) ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
                         Informasi Desa (Berita &amp; Agenda)
                     </a>
-                    <a href="{{ route('admin.profil.edit') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ in_array($activeNav, ['profil', 'aparatur']) ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                    <a href="{{ route('admin.profil.edit') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ in_array($activeNav, ['profil-desa', 'aparatur']) ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
                         Profil &amp; Aparatur Desa
                     </a>
                     <a href="{{ route('admin.panduan.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'panduan' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
@@ -480,7 +480,7 @@
                     <a href="{{ route('home') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'beranda' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
                         Beranda
                     </a>
-                    <a href="{{ route('profil.sejarah') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'profil' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
+                    <a href="{{ route('profil.sejarah') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ in_array($activeNav, ['profil-desa', 'sejarah', 'visi-misi', 'wilayah']) ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
                         Profil Desa (Sejarah, Visi Misi, Aparatur &amp; Wilayah)
                     </a>
                     <a href="{{ route('informasi.berita.index') }}" class="flex items-center min-h-[44px] px-3 py-2 rounded-lg text-sm font-semibold {{ $activeNav === 'berita' ? 'bg-desa-action text-white' : 'text-desa-dark hover:bg-desa-bright' }}">
@@ -505,6 +505,22 @@
                         Panduan Layanan &amp; Formulir
                     </a>
                 @endif
+
+                @auth
+                    @php
+                        $profilUrlMobile = auth()->user()->isAdmin()
+                            ? (Route::has('admin.profil.saya') ? route('admin.profil.saya') : (Route::has('admin.profil.edit') ? route('admin.profil.edit') : route('home')))
+                            : (Route::has('warga.profil') ? route('warga.profil') : route('home'));
+                    @endphp
+                    <div class="pt-2 mt-2 border-t border-desa-border">
+                        <a href="{{ $profilUrlMobile }}" class="flex items-center gap-2 min-h-[44px] px-3 py-2 rounded-lg text-sm font-bold {{ in_array($activeNav, ['profil', 'profil-saya']) ? 'bg-desa-action text-white font-extrabold' : 'text-desa-dark hover:bg-desa-bright' }}">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <span>Profil Saya</span>
+                        </a>
+                    </div>
+                @endauth
             </nav>
         </div>
     </header>

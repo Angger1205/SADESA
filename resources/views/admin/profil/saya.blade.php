@@ -1,4 +1,4 @@
-<x-admin-layout :title="'Profil Saya - Administrator Desa'" activeMenu="user" subtitle="Kelola foto profil akun aparatur serta tinjau data kependudukan Anda.">
+<x-admin-layout :title="'Profil Saya'" activeMenu="profil-saya" subtitle="Kelola foto profil akun aparatur serta tinjau data kependudukan Anda.">
     <div class="space-y-6">
         <!-- Notifikasi Pesan Sukses / Error -->
         @if (session('sukses'))

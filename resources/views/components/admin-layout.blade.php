@@ -15,7 +15,8 @@
         'kk', 'warga', 'user', 'kependudukan' => 'kependudukan',
         'pengaduan' => 'pengaduan',
         'berita', 'agenda', 'galeri', 'informasi' => 'informasi',
-        'profil', 'aparatur' => 'profil',
+        'profil-desa', 'aparatur' => 'profil-desa',
+        'profil', 'profil-saya' => 'profil-saya',
         'panduan' => 'panduan',
         default => 'dashboard',
     };
